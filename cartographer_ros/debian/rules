@@ -21,9 +21,6 @@ ifneq ($(filter nocheck,$(DEB_BUILD_OPTIONS)),)
 	BUILD_TESTING_ARG=-DBUILD_TESTING=OFF
 endif
 
-# Solve shlibdeps errors in REP136 packages that use GNUInstallDirs:
-export DEB_HOST_MULTIARCH := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
-
 DEB_HOST_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 
 %:
@@ -36,6 +33,7 @@ override_dh_auto_configure:
 	if [ -f "/opt/ros/jazzy/setup.sh" ]; then . "/opt/ros/jazzy/setup.sh"; fi && \
 	dh_auto_configure -- \
 		-DCMAKE_INSTALL_PREFIX="/opt/ros/jazzy" \
+		-DAMENT_PREFIX_PATH="/opt/ros/jazzy" \
 		-DCMAKE_PREFIX_PATH="/opt/ros/jazzy" \
 		$(BUILD_TESTING_ARG)
 
@@ -59,7 +57,7 @@ override_dh_shlibdeps:
 	# in the install tree and source it.  It will set things like
 	# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
 	if [ -f "/opt/ros/jazzy/setup.sh" ]; then . "/opt/ros/jazzy/setup.sh"; fi && \
-	dh_shlibdeps -l$(CURDIR)/debian/ros-jazzy-cartographer//opt/ros/jazzy/lib/:$(CURDIR)/debian/ros-jazzy-cartographer//opt/ros/jazzy/lib/${DEB_HOST_MULTIARCH}
+	dh_shlibdeps -l$(CURDIR)/debian/ros-jazzy-cartographer-ros//opt/ros/jazzy/lib/:$(CURDIR)/debian/ros-jazzy-cartographer-ros//opt/ros/jazzy/opt/cartographer_ros/lib/
 
 override_dh_auto_install:
 	# In case we're installing to a non-standard location, look for a setup.sh

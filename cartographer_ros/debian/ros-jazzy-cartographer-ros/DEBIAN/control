@@ -1,0 +1,11 @@
+Package: ros-jazzy-cartographer-ros
+Version: 2.0.9003-2noble
+Architecture: riscv64
+Maintainer: Chris Lalancette <clalancette@openrobotics.org>
+Installed-Size: 57482
+Depends: libabsl20220623t64 (>= 0~20220623.0-1), libboost-iostreams1.83.0 (>= 1.83.0), libc6 (>= 2.34), libcairo2 (>= 1.6.0), libceres4t64 (>= 2.2.0+dfsg), libgcc-s1 (>= 3.4), libgflags2.2 (>= 2.2.2), libgoogle-glog0v6t64 (>= 0.6.0), liblua5.3-0, libpcl-common1.14 (>= 1.14.0+dfsg), libprotobuf32t64 (>= 3.21.12), libstdc++6 (>= 13.1), libyaml-cpp0.8 (>= 0.8.0+dfsg-6build1), libabsl-dev, libeigen3-dev, libgflags-dev, libgoogle-glog-dev, libpcl-dev, ros-jazzy-builtin-interfaces, ros-jazzy-cartographer, ros-jazzy-cartographer-ros-msgs, ros-jazzy-geometry-msgs, ros-jazzy-launch, ros-jazzy-nav-msgs, ros-jazzy-pcl-conversions, ros-jazzy-rclcpp, ros-jazzy-robot-state-publisher, ros-jazzy-rosbag2-cpp, ros-jazzy-rosbag2-storage, ros-jazzy-sensor-msgs, ros-jazzy-std-msgs, ros-jazzy-tf2, ros-jazzy-tf2-eigen, ros-jazzy-tf2-msgs, ros-jazzy-tf2-ros, ros-jazzy-urdf, ros-jazzy-visualization-msgs, ros-jazzy-ros-workspace
+Section: misc
+Priority: optional
+Homepage: https://github.com/cartographer-project/cartographer_ros
+Description: Cartographer is a system that provides real-time simultaneous localization and mapping (SLAM) in 2D and 3D across multiple platforms and sensor configurations.
+ This package provides Cartographer's ROS integration.
