@@ -188,6 +188,7 @@ void Node::DrawAndPublish() {
   std::unique_ptr<nav_msgs::msg::OccupancyGrid> msg_ptr = CreateOccupancyGridMsg(
       painted_slices, resolution_, last_frame_id_, last_timestamp_);
   occupancy_grid_publisher_->publish(*msg_ptr);
+  RCLCPP_INFO(this->get_logger(), "[JADU] MAP PUBLISHING!! : width=%d, height=%d", msg_ptr->info.width, msg_ptr->info.height);
 }
 
 }  // namespace
