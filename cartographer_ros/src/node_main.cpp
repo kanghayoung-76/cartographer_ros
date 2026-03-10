@@ -23,27 +23,18 @@
 #include "rclcpp/rclcpp.hpp"
 #include "tf2_ros/transform_listener.h"
 
-DEFINE_bool(collect_metrics, false,
-            "Activates the collection of runtime metrics. If activated, the "
-            "metrics can be accessed via a ROS service.");
-DEFINE_string(configuration_directory, "",
-              "First directory in which configuration files are searched, "
-              "second is always the Cartographer installation to allow "
-              "including files from there.");
+DECLARE_bool(collect_metrics);
+DECLARE_string(configuration_directory);
 DEFINE_string(configuration_basename, "",
-              "Basename, i.e. not containing any directory prefix, of the "
-              "configuration file.");
-DEFINE_string(load_state_filename, "",
-              "If non-empty, filename of a .pbstream file to load, containing "
-              "a saved SLAM state.");
-DEFINE_bool(load_frozen_state, true,
-            "Load the saved state as frozen (non-optimized) trajectories.");
+		              "Basename, i.e. not containing any directory prefix, of the "
+			                    "configuration file.");
+DECLARE_string(load_state_filename);
+DECLARE_bool(load_frozen_state);
+
 DEFINE_bool(
     start_trajectory_with_default_topics, true,
     "Enable to immediately start the first trajectory with default topics.");
-DEFINE_string(
-    save_state_filename, "",
-    "If non-empty, serialize state and write it to disk before shutting down.");
+DECLARE_string(save_state_filename);
 
 namespace cartographer_ros {
 namespace {

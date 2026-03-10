@@ -41,8 +41,8 @@
 #include <string>
 
 DEFINE_bool(collect_metrics, false,
-            "Activates the collection of runtime metrics. If activated, the "
-            "metrics can be accessed via a ROS service.");
+		            "Activates the collection of runtime metrics. If activated, the "
+			                "metrics can be accessed via a ROS service.");
 DEFINE_string(configuration_directory, "",
               "First directory in which configuration files are searched, "
               "second is always the Cartographer installation to allow "

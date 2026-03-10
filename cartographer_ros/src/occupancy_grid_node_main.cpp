@@ -144,7 +144,8 @@ Node::Node(const double resolution, const double publish_period_sec)
 
       auto fetched_textures = cartographer_ros::FetchSubmapTextures(
             id, client_, callback_group_executor_,
-            std::chrono::milliseconds(int(publish_period_sec * 1000)));
+            std::chrono::milliseconds(30000));
+            //std::chrono::milliseconds(int(publish_period_sec * 1000)));
       if (fetched_textures == nullptr) {
         continue;
       }
@@ -188,7 +189,26 @@ void Node::DrawAndPublish() {
   std::unique_ptr<nav_msgs::msg::OccupancyGrid> msg_ptr = CreateOccupancyGridMsg(
       painted_slices, resolution_, last_frame_id_, last_timestamp_);
   occupancy_grid_publisher_->publish(*msg_ptr);
-  RCLCPP_INFO(this->get_logger(), "[JADU] MAP PUBLISHING!! : width=%d, height=%d", msg_ptr->info.width, msg_ptr->info.height);
+  RCLCPP_INFO(this->get_logger(), 
+		      "[JADU] MAP PUBLISHING!!\n"
+		          " width=%d\n"
+			      " height=%d\n"
+			          " resolution=%f\n"
+				      " origin.position=(%f, %f, %f)\n"
+				          " origin.orientation=(%f, %f, %f, %f)\n"
+					      " map_load_time=%d.%d",
+					          msg_ptr->info.width,
+						      msg_ptr->info.height,
+						          msg_ptr->info.resolution,
+							      msg_ptr->info.origin.position.x,
+							          msg_ptr->info.origin.position.y,
+								      msg_ptr->info.origin.position.z,
+								          msg_ptr->info.origin.orientation.x,
+									      msg_ptr->info.origin.orientation.y,
+									          msg_ptr->info.origin.orientation.z,
+										      msg_ptr->info.origin.orientation.w,
+										          msg_ptr->info.map_load_time.sec,
+											      msg_ptr->info.map_load_time.nanosec);
 }
 
 }  // namespace

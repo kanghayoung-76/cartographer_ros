@@ -35,12 +35,19 @@ std::unique_ptr<::cartographer::io::SubmapTextures> FetchSubmapTextures(
   request->trajectory_id = submap_id.trajectory_id;
   request->submap_index = submap_id.submap_index;
   auto future_result = client->async_send_request(request);
+  rclcpp::FutureReturnCode ret;
+  int retry = 0;
 
-  if (callback_group_executor->spin_until_future_complete(future_result, timeout) !=
-    rclcpp::FutureReturnCode::SUCCESS)
-  {
-    return nullptr;
+  do{
+  	ret = callback_group_executor->spin_until_future_complete(future_result, timeout);
+	retry++;
+	//RCLCPP_WARN(rclcpp::get_logger("submap"), "[JADU] spin ret: %d, retry: %d", (int)ret, retry);
+  } while (ret == rclcpp::FutureReturnCode::INTERRUPTED && retry < 10);
+
+  if (ret != rclcpp::FutureReturnCode::SUCCESS) {
+	return nullptr;
   }
+
   auto result = future_result.get();
 
   if (result->status.code != ::cartographer_ros_msgs::msg::StatusCode::OK ||
