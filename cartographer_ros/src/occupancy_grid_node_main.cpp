@@ -39,6 +39,10 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/version.h>
 
+#include "edge/edge_call.h"
+#include "host/keystone.h"
+
+
 DEFINE_double(resolution, 0.05,
               "Resolution of a grid cell in the published occupancy grid.");
 DEFINE_double(publish_period_sec, 1.0, "OccupancyGrid publishing period.");
@@ -189,8 +193,18 @@ void Node::DrawAndPublish() {
   std::unique_ptr<nav_msgs::msg::OccupancyGrid> msg_ptr = CreateOccupancyGridMsg(
       painted_slices, resolution_, last_frame_id_, last_timestamp_);
   occupancy_grid_publisher_->publish(*msg_ptr);
+
+  Keystone::Enclave enclave;
+  Keystone::Params params;
+  params.setFreeMemSize(256 * 1024);
+  params.setUntrustedSize(256 * 1024);
+  enclave.init("/home/ubuntu/TEE_example/hello_dir/hello", "/home/ubuntu/TEE_example/hello_dir/eyrie-rt", "/home/ubuntu/TEE_example/hello_dir/loader.bin", params);
+  enclave.registerOcallDispatch(incoming_call_dispatch);
+  RCLCPP_INFO(this->get_logger(),"[JADU] ENCLAVE RUN!!!!!!!!!!!!!!!!!!!!!");
+  enclave.run();
+
   RCLCPP_INFO(this->get_logger(), 
-		      "[JADU] MAP PUBLISHING!!\n"
+		      "[JADU] MAP PUBLISHING\n"
 		          " width=%d\n"
 			      " height=%d\n"
 			          " resolution=%f\n"

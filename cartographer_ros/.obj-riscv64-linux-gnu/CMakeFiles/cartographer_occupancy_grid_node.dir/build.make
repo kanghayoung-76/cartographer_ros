@@ -106,6 +106,8 @@ cartographer_occupancy_grid_node: /opt/ros/jazzy/lib/libnav_msgs__rosidl_typesup
 cartographer_occupancy_grid_node: /opt/ros/jazzy/lib/libnav_msgs__rosidl_typesupport_introspection_cpp.so
 cartographer_occupancy_grid_node: /opt/ros/jazzy/lib/libnav_msgs__rosidl_typesupport_cpp.so
 cartographer_occupancy_grid_node: /opt/ros/jazzy/lib/libnav_msgs__rosidl_generator_py.so
+cartographer_occupancy_grid_node: /home/ubuntu/TEE_example/sdk/install/lib/libkeystone-host.a
+cartographer_occupancy_grid_node: /home/ubuntu/TEE_example/sdk/install/lib/libkeystone-edge.a
 cartographer_occupancy_grid_node: /usr/lib/riscv64-linux-gnu/libceres.so.2.2.0
 cartographer_occupancy_grid_node: /usr/lib/riscv64-linux-gnu/libglog.so.0.6.0
 cartographer_occupancy_grid_node: /usr/lib/riscv64-linux-gnu/libgflags.so.2.2.2

@@ -147,12 +147,23 @@ target_link_libraries(cartographer_node PRIVATE
 )
 
 add_executable(cartographer_occupancy_grid_node src/occupancy_grid_node_main.cpp)
+
+##############JADU
+set(KEYSTONE_SDK_DIR /home/ubuntu/TEE_example/sdk/install)
+##############JADU
+
 target_include_directories(cartographer_occupancy_grid_node PRIVATE
+  ${KEYSTONE_SDK_DIR}/include #JADU
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
   ${CAIRO_INCLUDE_DIRS}
 )
+##############JADU
+target_link_directories(cartographer_occupancy_grid_node PRIVATE
+  ${KEYSTONE_SDK_DIR}/lib
+)
+##############JADU
 target_link_libraries(cartographer_occupancy_grid_node PRIVATE
   ${PROJECT_NAME}
   absl::synchronization
@@ -162,6 +173,9 @@ target_link_libraries(cartographer_occupancy_grid_node PRIVATE
   gflags
   ${nav_msgs_TARGETS}
   rclcpp::rclcpp
+  ${KEYSTONE_SDK_DIR}/lib/libkeystone-host.a #JADU
+  ${KEYSTONE_SDK_DIR}/lib/libkeystone-edge.a #JADU
+  dl #JADU
 )
 
 add_executable(cartographer_offline_node src/offline_node_main.cpp)
