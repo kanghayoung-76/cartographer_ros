@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/cartographer_occupancy_grid_node.dir/src/edge_wrapper.cpp.o"
+  "CMakeFiles/cartographer_occupancy_grid_node.dir/src/edge_wrapper.cpp.o.d"
   "CMakeFiles/cartographer_occupancy_grid_node.dir/src/occupancy_grid_node_main.cpp.o"
   "CMakeFiles/cartographer_occupancy_grid_node.dir/src/occupancy_grid_node_main.cpp.o.d"
   "cartographer_occupancy_grid_node"

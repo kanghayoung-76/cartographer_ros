@@ -349,6 +349,30 @@ src/assets_writer_main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cartographer_assets_writer.dir/build.make CMakeFiles/cartographer_assets_writer.dir/src/assets_writer_main.cpp.s
 .PHONY : src/assets_writer_main.cpp.s
 
+src/edge_wrapper.o: src/edge_wrapper.cpp.o
+.PHONY : src/edge_wrapper.o
+
+# target to build an object file
+src/edge_wrapper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cartographer_occupancy_grid_node.dir/build.make CMakeFiles/cartographer_occupancy_grid_node.dir/src/edge_wrapper.cpp.o
+.PHONY : src/edge_wrapper.cpp.o
+
+src/edge_wrapper.i: src/edge_wrapper.cpp.i
+.PHONY : src/edge_wrapper.i
+
+# target to preprocess a source file
+src/edge_wrapper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cartographer_occupancy_grid_node.dir/build.make CMakeFiles/cartographer_occupancy_grid_node.dir/src/edge_wrapper.cpp.i
+.PHONY : src/edge_wrapper.cpp.i
+
+src/edge_wrapper.s: src/edge_wrapper.cpp.s
+.PHONY : src/edge_wrapper.s
+
+# target to generate assembly for a file
+src/edge_wrapper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cartographer_occupancy_grid_node.dir/build.make CMakeFiles/cartographer_occupancy_grid_node.dir/src/edge_wrapper.cpp.s
+.PHONY : src/edge_wrapper.cpp.s
+
 src/map_builder_bridge.o: src/map_builder_bridge.cpp.o
 .PHONY : src/map_builder_bridge.o
 
@@ -978,6 +1002,9 @@ help:
 	@echo "... src/assets_writer_main.o"
 	@echo "... src/assets_writer_main.i"
 	@echo "... src/assets_writer_main.s"
+	@echo "... src/edge_wrapper.o"
+	@echo "... src/edge_wrapper.i"
+	@echo "... src/edge_wrapper.s"
 	@echo "... src/map_builder_bridge.o"
 	@echo "... src/map_builder_bridge.i"
 	@echo "... src/map_builder_bridge.s"

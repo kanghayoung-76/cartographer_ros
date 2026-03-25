@@ -41,6 +41,8 @@
 
 #include "edge/edge_call.h"
 #include "host/keystone.h"
+#include "host/SharedMemory.hpp"
+#include "edge_wrapper.h"
 
 
 DEFINE_double(resolution, 0.05,
@@ -52,6 +54,18 @@ DEFINE_bool(include_unfrozen_submaps, true,
             "Include unfrozen submaps in the occupancy grid.");
 DEFINE_string(occupancy_grid_topic, cartographer_ros::kOccupancyGridTopic,
               "Name of the topic on which the occupancy grid is published.");
+
+static Keystone::SharedMemory* g_shm = nullptr;
+
+  shm_t loan_shm(int id)
+{
+    shm_t s;
+    s.rid  = g_shm[id].getRID();
+    s.pa   = (uintptr_t)g_shm[id].getPA();
+    s.size = g_shm[id].getSize();
+    printf("[JADU_CARTO] loan_shm rid: %d pa: %#lx size: %d\n", s.rid, s.pa, s.size);
+    return s;
+}
 
 namespace cartographer_ros {
 namespace {
@@ -184,6 +198,10 @@ Node::Node(const double resolution, const double publish_period_sec)
     kSubmapListTopic, rclcpp::QoS(10), handleSubmapList);
 }
 
+  Keystone::Enclave enclave;
+  Keystone::Params params;
+  Keystone::SharedMemory shm[2];
+
 void Node::DrawAndPublish() {
   absl::MutexLock locker(&mutex_);
   if (submap_slices_.empty() || last_frame_id_.empty()) {
@@ -194,35 +212,18 @@ void Node::DrawAndPublish() {
       painted_slices, resolution_, last_frame_id_, last_timestamp_);
   occupancy_grid_publisher_->publish(*msg_ptr);
 
-  Keystone::Enclave enclave;
-  Keystone::Params params;
   params.setFreeMemSize(256 * 1024);
   params.setUntrustedSize(256 * 1024);
-  enclave.init("/home/ubuntu/TEE_example/hello_dir/hello", "/home/ubuntu/TEE_example/hello_dir/eyrie-rt", "/home/ubuntu/TEE_example/hello_dir/loader.bin", params);
-  enclave.registerOcallDispatch(incoming_call_dispatch);
-  RCLCPP_INFO(this->get_logger(),"[JADU] ENCLAVE RUN!!!!!!!!!!!!!!!!!!!!!");
+  enclave.init("/home/ubuntu/TEE_example/ros_dir/ros_pub_map", "/home/ubuntu/TEE_example/hello_dir/eyrie-rt", "/home/ubuntu/TEE_example/hello_dir/loader.bin", params);
+
+  rid_t rid0 = shm[0].createShm(0x1000);
+  shm[0].changeShm(rid0, 7);
+  shm[0].shareShm(rid0, enclave.getEID(), 7);
+  g_shm = shm;
+  edge_init(&enclave);
+  
   enclave.run();
 
-  RCLCPP_INFO(this->get_logger(), 
-		      "[JADU] MAP PUBLISHING\n"
-		          " width=%d\n"
-			      " height=%d\n"
-			          " resolution=%f\n"
-				      " origin.position=(%f, %f, %f)\n"
-				          " origin.orientation=(%f, %f, %f, %f)\n"
-					      " map_load_time=%d.%d",
-					          msg_ptr->info.width,
-						      msg_ptr->info.height,
-						          msg_ptr->info.resolution,
-							      msg_ptr->info.origin.position.x,
-							          msg_ptr->info.origin.position.y,
-								      msg_ptr->info.origin.position.z,
-								          msg_ptr->info.origin.orientation.x,
-									      msg_ptr->info.origin.orientation.y,
-									          msg_ptr->info.origin.orientation.z,
-										      msg_ptr->info.origin.orientation.w,
-										          msg_ptr->info.map_load_time.sec,
-											      msg_ptr->info.map_load_time.nanosec);
 }
 
 }  // namespace

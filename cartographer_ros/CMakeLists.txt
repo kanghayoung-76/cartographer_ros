@@ -146,7 +146,10 @@ target_link_libraries(cartographer_node PRIVATE
   tf2_ros::tf2_ros
 )
 
-add_executable(cartographer_occupancy_grid_node src/occupancy_grid_node_main.cpp)
+add_executable(cartographer_occupancy_grid_node 
+	src/occupancy_grid_node_main.cpp
+	src/edge_wrapper.cpp #JADU
+)
 
 ##############JADU
 set(KEYSTONE_SDK_DIR /home/ubuntu/TEE_example/sdk/install)
