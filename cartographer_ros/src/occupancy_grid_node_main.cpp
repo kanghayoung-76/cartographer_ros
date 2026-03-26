@@ -43,6 +43,8 @@
 #include "host/keystone.h"
 #include "host/SharedMemory.hpp"
 #include "edge_wrapper.h"
+#include <fcntl.h>
+#include <sys/mman.h>
 
 
 DEFINE_double(resolution, 0.05,
@@ -63,7 +65,6 @@ static Keystone::SharedMemory* g_shm = nullptr;
     s.rid  = g_shm[id].getRID();
     s.pa   = (uintptr_t)g_shm[id].getPA();
     s.size = g_shm[id].getSize();
-    printf("[JADU_CARTO] loan_shm rid: %d pa: %#lx size: %d\n", s.rid, s.pa, s.size);
     return s;
 }
 
@@ -209,10 +210,10 @@ void Node::DrawAndPublish() {
   }
   auto painted_slices = PaintSubmapSlices(submap_slices_, resolution_);
   std::unique_ptr<nav_msgs::msg::OccupancyGrid> msg_ptr = CreateOccupancyGridMsg(
-      painted_slices, resolution_, last_frame_id_, last_timestamp_);
-  occupancy_grid_publisher_->publish(*msg_ptr);
+  painted_slices, resolution_, last_frame_id_, last_timestamp_);
+//occupancy_grid_publisher_->publish(*msg_ptr);
+  RCLCPP_INFO(get_logger(), "[JADU_CARTO] data size: %zu", msg_ptr->data.size());
 
-  params.setFreeMemSize(256 * 1024);
   params.setUntrustedSize(256 * 1024);
   enclave.init("/home/ubuntu/TEE_example/ros_dir/ros_pub_map", "/home/ubuntu/TEE_example/hello_dir/eyrie-rt", "/home/ubuntu/TEE_example/hello_dir/loader.bin", params);
 
@@ -220,10 +221,21 @@ void Node::DrawAndPublish() {
   shm[0].changeShm(rid0, 7);
   shm[0].shareShm(rid0, enclave.getEID(), 7);
   g_shm = shm;
+
+  void *base = mmap(NULL, 0x1000, PROT_READ | PROT_WRITE, MAP_SHARED, enclave.getFD(), 0xa3006000);
+  if (base == MAP_FAILED) {
+	      perror("[JADU_CARTO] mmap failed");
+  }
+  RCLCPP_INFO(get_logger(), "[JADU_CARTO] base: %p", base); 
+  size_t copy_size = std::min(msg_ptr->data.size(), (size_t)0x1000);
+  memcpy(base, msg_ptr->data.data(), copy_size);
+
   edge_init(&enclave);
   
   enclave.run();
+  munmap(base, 0x1000);
 
+  occupancy_grid_publisher_->publish(nav_msgs::msg::OccupancyGrid());
 }
 
 }  // namespace
